@@ -7,6 +7,7 @@ _REST API que permita realizar operaciones CRUD sobre una estructura de datos qu
 _Estas instrucciones te permitirán obtener una copia del proyecto en funcionamiento en tu máquina local para propósitos de desarrollo y pruebas._
 
 ### Pre-requisitos 📋
+
 _Instalar node.js, mysql workbench _
 
 
@@ -21,6 +22,7 @@ $ npm i express
 ```
 
 **JSON Web Token (JWT)**
+
 _para crear un token que sirva para enviar datos entre aplicaciones o servicios y garantizar que sean válidos y seguros._
 
 ```
@@ -194,6 +196,7 @@ _[POST] localhost:4444/productos/update_
 ## PEDIDOS 🍔
 
 ### Obtener un pedido 🔔
+
 _Los admins pueden veer todos los pedidos. Los users no admins solo tienen permisos para retornar sus proprios pedidos_
 
 _[GET] localhost:4444/order?token<>_
@@ -245,6 +248,7 @@ _[POST] localhost:4444/order/create_
 ```
 
 ### Editar un pedido 🖊️🔔
+
 _Los pedidos apenas aceptan los estados ('NUEVO', 'CONFIRMADO', 'PREPARANDO', 'ENVIANDO', 'CANCELADO', 'ENTREGADO')_
 
 _[POST] localhost:4444/order/edit_
