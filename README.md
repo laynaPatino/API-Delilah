@@ -35,7 +35,7 @@ $ npm i jsonwebtoken
 ```
 $ npm i mysql2
 ```
-## Dominio del server ⌨️
+## Dominio del server 🖥
 
 _localhost:4444_
 
