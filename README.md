@@ -194,6 +194,8 @@ _[POST] localhost:4444/productos/update_
     }
 ```
 
+## PEDIDOS 🍔##
+
 ### Obtener un pedido 🔔
 _Los admins pueden veer todos los pedidos. Los users no admins solo tienen permisos para retornar sus proprios pedidos_
 
