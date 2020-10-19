@@ -303,7 +303,7 @@ Por favor lee el [README.md](https://github.com/laynaPatino/API-Delilah/blob/mai
 
 ## Autor ✒️
 
-* **Andrés Villanueva** [laynaPatino](https://github.com/laynaPatino)
+* **Carolina Patiño** [laynaPatino](https://github.com/laynaPatino)
 
 
 ---
