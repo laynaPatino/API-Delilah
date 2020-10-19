@@ -290,7 +290,8 @@ _[POST] localhost:4444/order/delete_
   "info": "",
   "serverStatus": 2,
   "warningStatus": 0
-}```
+}
+```
 
 
 Por favor lee el [README.md](https://github.com/laynaPatino/API-Delilah/blob/main/README.md) para detalles deL código.
