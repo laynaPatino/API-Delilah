@@ -1,6 +1,6 @@
 # Delilah Restó
 
-_Acá va un párrafo que describa lo que es el proyecto_
+_REST API que permita realizar operaciones CRUD sobre una estructura de datos que podría consumir un cliente, y ponleo en producción a través del uso de web services_
 
 ## Comenzando 🚀
 
