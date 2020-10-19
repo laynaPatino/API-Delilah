@@ -92,7 +92,7 @@ _Este token lo usaras mas adelante para las pruebas asi que tenlo presente_
         "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MTUsIlVTRVJfTkFNRSI6ImFzZHNhIiwiRU1BSUwiOiJkc2Fkc2EiLCJST0xFIjoiQURNSU4iLCJpYXQiOjE2MDA5OTMwNzB9.PomyN_NdYIdbdFuWhGtetopD8TGiyeoUV18GF08uDTg"
     }
 ```
-## PRODUCTOS 🍔##
+## PRODUCTOS 🍔
 
 ### Obtener listado de productos 🍔
 
@@ -191,7 +191,7 @@ _[POST] localhost:4444/productos/update_
     }
 ```
 
-## PEDIDOS 🍔##
+## PEDIDOS 🍔
 
 ### Obtener un pedido 🔔
 _Los admins pueden veer todos los pedidos. Los users no admins solo tienen permisos para retornar sus proprios pedidos_
