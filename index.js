@@ -2,11 +2,11 @@ const express = require('express');
 const mysql = require('mysql2');
 
 const app = express();
-app.use( express.json() );
+app.use(express.json());
 
 const jsonWebToken = require('jsonwebtoken');
 const { json } = require('express');
-const myJWTSecretKey = 'a61twg283e328das'; 
+const myJWTSecretKey = 'a61twg283e328das';
 const connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
@@ -24,7 +24,7 @@ const tokenVerify = (req, res, next) => {
     }
 
     try {
-        const tokenDecodedData = jsonWebToken.verify(token, myJWTSecretKey);    
+        const tokenDecodedData = jsonWebToken.verify(token, myJWTSecretKey);
         const {
             ID,
             ROLE
@@ -38,9 +38,9 @@ const tokenVerify = (req, res, next) => {
         next();
 
     } catch {
-        res.json({error:'token invalido'})
+        res.json({ error: 'token invalido' })
     }
-    
+
 
 };
 
@@ -49,7 +49,7 @@ const isAdminUser = (req, res, next) => {
     if (req.USER_DATA.ROLE === "ADMIN") {
         next();
     } else {
-        res.json({error : 'El usuario no es admin'});
+        res.json({ error: 'El usuario no es admin' });
     }
 
 };
@@ -66,85 +66,85 @@ app.get('/productos', (req, res) => {
     );
 });
 app.post('/productos/:operacion/', tokenVerify, isAdminUser, (req, res) => {
-    
+
     //Aca estamos creando constantes de los valores del json que recibimos en el body del pedido. 
     const {
         PRODUCT_NAME,
         PRODUCT_PRICE,
-        PRODUCT_IMAGE, 
+        PRODUCT_IMAGE,
         WHERE,
-    } = req.body;   
+    } = req.body;
 
     //en el objeto req.param tengo un json que me devuelve todas las variables de parametros que puedo llegar a usar en mi url.
-    switch(req.params.operacion) {
+    switch (req.params.operacion) {
         //Estamos verificando dentro del switch que valor de operacion tengo en la variable operacion y tratando la informacion segun su valor.
         case 'add':
-            
+
             connection.query(
-                "INSERT INTO products (PRODUCT_NAME, PRODUCT_PRICE, PRODUCT_IMAGE) VALUES ('"+PRODUCT_NAME+"', '"+PRODUCT_PRICE+"', '"+PRODUCT_IMAGE+"');",
+                "INSERT INTO products (PRODUCT_NAME, PRODUCT_PRICE, PRODUCT_IMAGE) VALUES ('" + PRODUCT_NAME + "', '" + PRODUCT_PRICE + "', '" + PRODUCT_IMAGE + "');",
                 function(err, results, fields) {
                     res.json(results);
                 }
             );
-         
-        break;
+
+            break;
 
         case 'remove':
-                        
+
             let stringCondition = "";
             const conditionsName = ["PRODUCT_NAME", "PRODUCT_PRICE", "PRODUCT_IMAGE"];
             const conditionsValue = [PRODUCT_NAME, PRODUCT_PRICE, PRODUCT_IMAGE];
 
-            conditionsValue.forEach( (condition, index) => {
+            conditionsValue.forEach((condition, index) => {
                 //Verificar si la condicion no devuelve undefined
                 if (condition !== undefined) {
-                    
+
                     if (stringCondition === "") {
-                        stringCondition = "WHERE " + conditionsName[index] + " = '" + conditionsValue[index]  + "'";
+                        stringCondition = "WHERE " + conditionsName[index] + " = '" + conditionsValue[index] + "'";
                     } else {
                         stringCondition = stringCondition + " AND " + conditionsName[index] + " = '" + conditionsValue[index] + "'";
                     }
 
                 };
             });
-            
+
             connection.query(
                 "DELETE FROM products " + stringCondition,
                 function(err, results, fields) {
                     res.json(results);
                 }
             );
-        break;
+            break;
 
         case 'update':
-        
+
             if (WHERE === undefined) {
-                res.json( { error: "El update deberia tener una condicion" } )
+                res.json({ error: "El update deberia tener una condicion" })
             }
 
             let updateStringCondition = "";
             const updateConditionsName = [
-                                            "PRODUCT_NAME", 
-                                            "PRODUCT_PRICE", 
-                                            "PRODUCT_IMAGE",
-                                            "ID"
-                                        ];
- 
-            const updateConditionsValue = [
-                                            WHERE.PRODUCT_NAME || undefined, 
-                                            WHERE.PRODUCT_PRICE || undefined, 
-                                            WHERE.PRODUCT_IMAGE || undefined,
-                                            WHERE.ID || undefined,
-                                        ];
+                "PRODUCT_NAME",
+                "PRODUCT_PRICE",
+                "PRODUCT_IMAGE",
+                "ID"
+            ];
 
-            updateConditionsValue.forEach( (condition, index) => {
+            const updateConditionsValue = [
+                WHERE.PRODUCT_NAME || undefined,
+                WHERE.PRODUCT_PRICE || undefined,
+                WHERE.PRODUCT_IMAGE || undefined,
+                WHERE.ID || undefined,
+            ];
+
+            updateConditionsValue.forEach((condition, index) => {
 
                 if (condition !== undefined) {
                     if (updateStringCondition === "") {
-                        updateStringCondition = " WHERE " + updateConditionsName[index] + " = '" + updateConditionsValue[index]  + "'";
+                        updateStringCondition = " WHERE " + updateConditionsName[index] + " = '" + updateConditionsValue[index] + "'";
                     } else {
                         updateStringCondition = updateStringCondition + " AND " + updateConditionsName[index] + " = '" + updateConditionsValue[index] + "'";
-                    }  
+                    }
                 }
             });
 
@@ -152,14 +152,14 @@ app.post('/productos/:operacion/', tokenVerify, isAdminUser, (req, res) => {
             const changeRequestName = ["PRODUCT_NAME", "PRODUCT_PRICE", "PRODUCT_IMAGE"];
             const changeRequestValue = [PRODUCT_NAME, PRODUCT_PRICE, PRODUCT_IMAGE];
 
-            changeRequestValue.forEach( (condition, index) => {
+            changeRequestValue.forEach((condition, index) => {
 
                 if (condition !== undefined) {
                     if (changeString === "") {
-                        changeString = "SET " + changeRequestName[index] + " = '" + changeRequestValue[index]  + "'";
+                        changeString = "SET " + changeRequestName[index] + " = '" + changeRequestValue[index] + "'";
                     } else {
                         changeString = changeString + " , " + changeRequestName[index] + " = '" + changeRequestValue[index] + "'";
-                    }  
+                    }
                 }
             });
 
@@ -169,16 +169,16 @@ app.post('/productos/:operacion/', tokenVerify, isAdminUser, (req, res) => {
                     res.json(results);
                 }
             );
-                        
-        break;
 
-        //en el default enviamos en json con un mensaje de error caso ninguna condicion del switch de cumpla.
+            break;
+
+            //en el default enviamos en json con un mensaje de error caso ninguna condicion del switch de cumpla.
         default:
-            res.json({error: 'Endpoint invalido'});
+            res.json({ error: 'Endpoint invalido' });
     };
 });
 app.post('/user/add', (req, res) => {
-    
+
     const {
         USER_NAME,
         FULL_NAME,
@@ -201,7 +201,7 @@ app.post('/user/add', (req, res) => {
     );
 
     if (!verifyInputs) {
-        res.json({error : 'Hay datos de usuario faltantes!'});
+        res.json({ error: 'Hay datos de usuario faltantes!' });
         return;
     }
 
@@ -213,9 +213,9 @@ app.post('/user/add', (req, res) => {
         WHERE NOT EXISTS (Select Id, guidd From #table1 WHERE #table1.id = #table2.id)
     *
     */
-   
+
     connection.query(
-        "INSERT INTO `users` (USER_NAME, FULL_NAME, EMAIL, PHONE_COUNTRY_CODE, PHONE_NUMBER, ADDRESS, PASSWORD, ROLE) VALUES ('"+USER_NAME+"', '"+FULL_NAME+"', '"+EMAIL+"', '"+PHONE_COUNTRY_CODE+"', '"+PHONE_NUMBER+"', '"+ADDRESS+"', '"+PASSWORD+"' , '"+ROLE+"');",
+        "INSERT INTO `users` (USER_NAME, FULL_NAME, EMAIL, PHONE_COUNTRY_CODE, PHONE_NUMBER, ADDRESS, PASSWORD, ROLE) VALUES ('" + USER_NAME + "', '" + FULL_NAME + "', '" + EMAIL + "', '" + PHONE_COUNTRY_CODE + "', '" + PHONE_NUMBER + "', '" + ADDRESS + "', '" + PASSWORD + "' , '" + ROLE + "');",
         function(err, results, fields) {
             res.json(results);
         }
@@ -233,25 +233,25 @@ app.post('/user/login', (req, res) => {
     const conditionsName = ["USER_NAME", "EMAIL", "PASSWORD"];
     const conditionsValue = [USER_NAME, EMAIL, PASSWORD];
 
-    conditionsValue.forEach( (condition, index) => {
+    conditionsValue.forEach((condition, index) => {
         //Verificar si la condicion no devuelve undefined
         if (condition !== undefined) {
             if (stringCondition === "") {
-                stringCondition = "WHERE " + conditionsName[index] + " = '" + conditionsValue[index]  + "'";
+                stringCondition = "WHERE " + conditionsName[index] + " = '" + conditionsValue[index] + "'";
             } else {
                 stringCondition = stringCondition + " AND " + conditionsName[index] + " = '" + conditionsValue[index] + "'";
             }
         }
     });
 
-    if ( USER_NAME && PASSWORD || EMAIL && PASSWORD ) {
+    if (USER_NAME && PASSWORD || EMAIL && PASSWORD) {
 
         const queryString = "SELECT * FROM users " + stringCondition;
 
         connection.query(
             queryString,
             function(err, results, fields) {
-                
+
 
                 const {
                     ID,
@@ -268,8 +268,8 @@ app.post('/user/login', (req, res) => {
                 }
 
                 const token = jsonWebToken.sign(payload, myJWTSecretKey);
-                
-                res.json({token});
+
+                res.json({ token });
             }
         );
 
@@ -288,7 +288,7 @@ app.post('/order/create', tokenVerify, (req, res) => {
         PAGO,
         DIRECCION,
         PRODUCTOS
-    } = req.body;   
+    } = req.body;
 
 
     const ESTADO = "NUEVO";
@@ -302,9 +302,8 @@ app.post('/order/create', tokenVerify, (req, res) => {
 
     const productID = Object.keys(PRODUCTOS)
     let stringCondition, productsData;
-    let descriptionString = "";
 
-    productID.forEach( (condition, index) => {
+    productID.forEach((condition, index) => {
         //Verificar si la condicion no devuelve undefined
         if (index === 0) {
             stringCondition = " WHERE ID =" + condition;
@@ -315,39 +314,31 @@ app.post('/order/create', tokenVerify, (req, res) => {
 
     connection.query("SELECT * FROM products" + stringCondition, (err, results, fields) => {
         productsData = results;
-        
-        let productList =  {};
 
-       
+        let productList = {};
 
-        productsData.forEach( productListItems => {
+        productsData.forEach(productListItems => {
             productList[productListItems.ID] = productListItems.PRODUCT_NAME;
         })
-       
+
         const databaseProducts = Object.keys(productList);
 
         let productVerify = false;
-        
-        databaseProducts.forEach( (databaseProductsUnit) => {
+
+        databaseProducts.forEach((databaseProductsUnit) => {
             if (productID.includes(databaseProductsUnit)) {
                 productVerify = true;
             };
         });
 
-        if(!productVerify) {
-            res.json({ error: "Producto invalido!"  });
+        if (!productVerify) {
+            res.json({ error: "Producto invalido!" });
         };
 
-        productID.forEach( id => {
-            descriptionString +=  PRODUCTOS[id].QNT + "x " + productList[id] + " ";
-        })
-
         connection.query(
-            "INSERT INTO pedidos (ESTADO, HORA, DESCRIPCION, PAGO, USUARIO, DIRECCION) VALUES ('"+ESTADO+"', '"+HOUR+"', '"+descriptionString+"', '"+PAGO+"', '"+req.USER_DATA.ID+"', '"+DIRECCION+"');",
+            "INSERT INTO pedidos (ESTADO, HORA, DESCRIPCION, PAGO, USUARIO, DIRECCION) VALUES ('" + ESTADO + "', '" + HOUR + "', '" + JSON.stringify(PRODUCTOS) + "', '" + PAGO + "', '" + req.USER_DATA.ID + "', '" + DIRECCION + "');",
             function(err, results, fields) {
-                if(err) {
-                    console.log(err)
-                }
+                if (err) { console.log(err) }
                 res.json(results);
             }
         );
@@ -377,37 +368,37 @@ app.post('/order/edit', tokenVerify, isAdminUser, (req, res) => {
     const {
         ESTADO,
         DESCRIPCION,
-        DIRECCION, 
+        DIRECCION,
         WHERE,
-    } = req.body;  
+    } = req.body;
 
     if (WHERE === undefined) {
-        res.json( { error: "El update deberia tener una condicion" } )
+        res.json({ error: "El update deberia tener una condicion" })
     }
 
     let updateStringCondition = "";
     const updateConditionsName = [
-                                    "ESTADO", 
-                                    "DESCRIPCION", 
-                                    "DIRECCION",
-                                    "ID"
-                                ];
+        "ESTADO",
+        "DESCRIPCION",
+        "DIRECCION",
+        "ID"
+    ];
 
     const updateConditionsValue = [
-                                    WHERE.ESTADO || undefined, 
-                                    WHERE.DESCRIPCION || undefined, 
-                                    WHERE.DIRECCION || undefined,
-                                    WHERE.ID || undefined,
-                                ];
+        WHERE.ESTADO || undefined,
+        WHERE.DESCRIPCION || undefined,
+        WHERE.DIRECCION || undefined,
+        WHERE.ID || undefined,
+    ];
 
-    updateConditionsValue.forEach( (condition, index) => {
+    updateConditionsValue.forEach((condition, index) => {
 
         if (condition !== undefined) {
             if (updateStringCondition === "") {
-                updateStringCondition = " WHERE " + updateConditionsName[index] + " = '" + updateConditionsValue[index]  + "'";
+                updateStringCondition = " WHERE " + updateConditionsName[index] + " = '" + updateConditionsValue[index] + "'";
             } else {
                 updateStringCondition = updateStringCondition + " AND " + updateConditionsName[index] + " = '" + updateConditionsValue[index] + "'";
-            }  
+            }
         }
     });
 
@@ -415,21 +406,21 @@ app.post('/order/edit', tokenVerify, isAdminUser, (req, res) => {
     const changeRequestName = ["ESTADO", "DESCRIPCION", "DIRECCION"];
     const changeRequestValue = [ESTADO, DESCRIPCION, DIRECCION];
 
-    changeRequestValue.forEach( (condition, index) => {
+    changeRequestValue.forEach((condition, index) => {
 
         if (condition !== undefined) {
             if (changeString === "") {
-                changeString = "SET " + changeRequestName[index] + " = '" + changeRequestValue[index]  + "'";
+                changeString = "SET " + changeRequestName[index] + " = '" + changeRequestValue[index] + "'";
             } else {
                 changeString = changeString + " , " + changeRequestName[index] + " = '" + changeRequestValue[index] + "'";
-            }  
+            }
         }
     });
 
     connection.query(
         "UPDATE pedidos " + changeString + updateStringCondition,
         function(err, results, fields) {
-            if(err) {
+            if (err) {
                 console.log(err);
             }
             res.json(results);
@@ -440,12 +431,12 @@ app.post('/order/delete', tokenVerify, isAdminUser, (req, res) => {
     const {
         ID
     } = req.body;
-    
+
     let QUERY = 'DELETE FROM `pedidos` WHERE ID = ' + ID + ';';
     connection.query(
-       QUERY,
+        QUERY,
         function(err, results, fields) {
-            if(err) {
+            if (err) {
                 console.log(err);
             }
             res.json(results);
